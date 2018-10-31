@@ -1,0 +1,1 @@
+# jnlp-slave-with-redcross-build-tools
