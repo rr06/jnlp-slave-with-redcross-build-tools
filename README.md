@@ -1,1 +1,1 @@
-# jnlp-slave-with-redcross-build-tools
+# jnlp-slave-with-more-java-build-tools
