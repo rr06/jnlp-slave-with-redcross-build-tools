@@ -1,4 +1,4 @@
-FROM cloudbees/jnlp-slave-with-java-build-tools
+FROM cloudbees/jnlp-slave-with-java-build-tools:2.4.0
 
 USER root
 
@@ -14,6 +14,8 @@ RUN \
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
   add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
   apt-get -y update && \
+  # make sure sudo is there
+  echo  "N" | apt-get -y install sudo && \
   apt-cache policy docker-ce && \
   apt-get -y --no-install-recommends install docker-ce ruby mysql-server && \
   # install gradle
@@ -24,4 +26,25 @@ RUN \
 
 ENV DEBIAN_FRONTEND=""
 
-USER jenkins
+COPY docker_group_setup.sh /opt/bin/docker_group_setup.sh
+
+RUN chmod 755 /opt/bin/docker_group_setup.sh
+
+# Ideally, we would switch to the jenkins user at this point. However, there is a challenge 
+# I'm struggling with. In order to run docker commands from inside the container, we need to
+# have access to /var/run/docker.sock on the host. That means making sure container Jenkins is 
+# in a group where the GID matches the GID of the docker group on the host. 
+# The most flexible way of getting the right GID is to pull it at run time from the container.
+# The specifics are in the docker_group_setup.sh script.
+# The challenge is container jenkins user doesn't actually get the new GID until conatiner jenkins
+# logs in again. I tried all kinds of different ways to do so to no avail.
+# So the compromise, at least for now, is to leave user as root here. The docker_group_setup.sh
+# entrypoint will change to user jenkins before starting up the jnlp agent.
+# Again, not ideal, but it works for now.
+# 
+# When problem described above is figured out, uncomment line below
+# USER jenkins
+
+VOLUME [ "/etc/group_host" ]
+
+ENTRYPOINT [ "/opt/bin/docker_group_setup.sh" ]
