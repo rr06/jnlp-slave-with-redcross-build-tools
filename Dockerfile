@@ -14,6 +14,8 @@ RUN \
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
   add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
   apt-get -y update && \
+  # make sure sudo is there
+  echo  "N" | apt-get -y install sudo && \
   apt-cache policy docker-ce && \
   apt-get -y --no-install-recommends install docker-ce ruby mysql-server && \
   # install gradle
@@ -24,4 +26,12 @@ RUN \
 
 ENV DEBIAN_FRONTEND=""
 
+COPY docker_group_setup.sh /opt/bin/docker_group_setup.sh
+
+RUN chmod 755 /opt/bin/docker_group_setup.sh
+
 USER jenkins
+
+VOLUME [ "/etc/group_host" ]
+
+ENTRYPOINT [ "/opt/bin/docker_group_setup.sh" ]
