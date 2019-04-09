@@ -28,7 +28,7 @@ ENV DEBIAN_FRONTEND=""
 
 COPY docker_group_setup.sh /opt/bin/docker_group_setup.sh
 
-RUN chmod 755 /opt/bin/docker_group_setup.sh
+RUN chmod 755 /opt/bin/docker_group_setup.sh /scripts/mysql/*.sh
 
 # Ideally, we would switch to the jenkins user at this point. However, there is a challenge 
 # I'm struggling with. In order to run docker commands from inside the container, we need to
