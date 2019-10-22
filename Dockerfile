@@ -4,7 +4,7 @@ USER root
 
 ADD scripts /scripts
 
-ENV VER_GRADLE 3.5
+ENV VER_GRADLE 5.6.3
 
 # set for non-interactive install (do not forget to unset in the end)
 ENV DEBIAN_FRONTEND noninteractive
@@ -23,6 +23,11 @@ RUN \
   mkdir /opt/gradle && \
   unzip -d /opt/gradle gradle-${VER_GRADLE}-bin.zip && \
   ln -s /opt/gradle/gradle-${VER_GRADLE}/bin/gradle /usr/local/bin/gradle
+
+# Install JDK 11, which should make it the default JDK for the container
+RUN apt-add-repository ppa:openjdk-r/ppa && \
+  apt-get -y update && \
+  apt-get -y install openjdk-11-jdk
 
 ENV DEBIAN_FRONTEND=""
 
