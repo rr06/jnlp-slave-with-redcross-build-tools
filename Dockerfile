@@ -5,6 +5,7 @@ USER root
 ADD scripts /scripts
 
 ENV VER_GRADLE 5.6.3
+ENV VER_DOCKER_COMPOSE 1.24.1
 
 # set for non-interactive install (do not forget to unset in the end)
 ENV DEBIAN_FRONTEND noninteractive
@@ -28,6 +29,10 @@ RUN \
 RUN apt-add-repository ppa:openjdk-r/ppa && \
   apt-get -y update && \
   apt-get -y install openjdk-11-jdk
+
+# Install Docker Compose
+RUN curl -L "https://github.com/docker/compose/releases/download/${VER_DOCKER_COMPOSE}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
+  chmod +x /usr/local/bin/docker-compose
 
 ENV DEBIAN_FRONTEND=""
 
