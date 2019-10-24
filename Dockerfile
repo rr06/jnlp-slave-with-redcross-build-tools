@@ -5,6 +5,7 @@ USER root
 ADD scripts /scripts
 
 ENV VER_GRADLE 3.5
+ENV VER_DOCKER_COMPOSE 1.24.1
 
 # set for non-interactive install (do not forget to unset in the end)
 ENV DEBIAN_FRONTEND noninteractive
@@ -23,6 +24,10 @@ RUN \
   mkdir /opt/gradle && \
   unzip -d /opt/gradle gradle-${VER_GRADLE}-bin.zip && \
   ln -s /opt/gradle/gradle-${VER_GRADLE}/bin/gradle /usr/local/bin/gradle
+
+# Install Docker Compose
+RUN curl -L "https://github.com/docker/compose/releases/download/${VER_DOCKER_COMPOSE}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
+  chmod +x /usr/local/bin/docker-compose
 
 ENV DEBIAN_FRONTEND=""
 
