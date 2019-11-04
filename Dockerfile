@@ -36,7 +36,8 @@ RUN curl -L "https://github.com/docker/compose/releases/download/${VER_DOCKER_CO
 
 # Install Ansible
 RUN apt-add-repository --yes --update ppa:ansible/ansible && \
-  apt-get -y install ansible   
+  apt-get -y install ansible && \
+  pip install boto3
 
 ENV DEBIAN_FRONTEND=""
 
