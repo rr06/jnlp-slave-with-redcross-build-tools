@@ -34,6 +34,10 @@ RUN apt-add-repository ppa:openjdk-r/ppa && \
 RUN curl -L "https://github.com/docker/compose/releases/download/${VER_DOCKER_COMPOSE}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
   chmod +x /usr/local/bin/docker-compose
 
+# Install Ansible
+RUN apt-add-repository --yes --update ppa:ansible/ansible && \
+  apt-get -y install ansible   
+
 ENV DEBIAN_FRONTEND=""
 
 COPY docker_group_setup.sh /opt/bin/docker_group_setup.sh
